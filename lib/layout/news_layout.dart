@@ -16,6 +16,11 @@ class NewsLayout extends StatelessWidget
             title: Text('News App'),
             actions: [
               IconButton(icon:Icon(Icons.search),onPressed: (){},),
+              IconButton(icon:Icon(Icons.brightness_4_outlined,),
+              onPressed:(){
+                cubit.changeMode();
+              },
+              ),
             ],
           ),
           body: cubit.screens[cubit.currentIndex],
@@ -26,12 +31,6 @@ class NewsLayout extends StatelessWidget
             },
             currentIndex: cubit.currentIndex,
           ),
-          // floatingActionButton: FloatingActionButton(
-          //   child: Icon(Icons.add),
-          //   onPressed: (){
-          //
-          //   },
-          // ),
         );
       },
     );
