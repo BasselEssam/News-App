@@ -5,29 +5,37 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:news_app/layout/cubit/states.dart';
 import 'package:news_app/layout/news_layout.dart';
 import 'package:news_app/shared/bloc_observer.dart';
+import 'package:news_app/shared/network/local/cache_helper.dart';
 import 'package:news_app/shared/network/remote/dio_helper.dart';
 import 'layout/cubit/cubit.dart';
 
-void main(){
+void main()async
+{
+  WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer=MyBlocObserver();
   DioHelper.init();
-  runApp(MyApp());
+  await CacheHelper.init();
+  bool? isDark=CacheHelper.getBool(key: 'isDark');
+  int? sharedIndex=CacheHelper.getInt(key: 'currentIndex');
+
+  runApp(MyApp(isDark,sharedIndex));
 }
 
 class MyApp extends StatelessWidget{
+  bool? isDark;
+  int? sharedIndex;
+  MyApp(this.isDark,this.sharedIndex);
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context)=>NewsCubit()..getBusiness()..getSports()..getScience(),
+      create: (context)=>NewsCubit()..getBusiness()..getSports()..getScience()..setMode(isDark)..setIndex(sharedIndex),
       child: BlocConsumer<NewsCubit,NewsStates>(
         listener: (context,state){},
         builder:(context, state)
         {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: Directionality(
-                textDirection: TextDirection.ltr,
-                child: NewsLayout()),
+            home: NewsLayout(),
             theme: ThemeData(
               primarySwatch: Colors.purple,
               scaffoldBackgroundColor: Colors.white,
